@@ -1,0 +1,7 @@
+[project]
+name = "projects"
+version = "0.1.0"
+description = "Онлайн-библиотека; проект создан в учебных целях"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
