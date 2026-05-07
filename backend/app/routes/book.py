@@ -1,4 +1,5 @@
 from app.dependencies.deps import BookRepoDeps
+from app.domain.exception import BookAlreadyExistsError
 from app.schemas.book import BookCreate, BookResponse, BookUpdate
 from fastapi import APIRouter, HTTPException, Response, status
 
@@ -15,8 +16,10 @@ async def create_book(
     book_data: BookCreate,
     repo: BookRepoDeps
     ):
-    book = await repo.create(book_data)
-    return book
+    try:
+        return await repo.create(book_data)
+    except BookAlreadyExistsError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.get(
     "/",
@@ -27,10 +30,10 @@ async def create_book(
 async def list_books(
     repo: BookRepoDeps,
     skip: int = 0,
-    limit: int = 100
+    limit: int = 100,
+    search: str | None = None
     ):
-    books = await repo.list(skip=skip, limit=limit)
-    return books
+    return await repo.list(skip=skip, limit=limit, search=search)
 
 @router.get(
     "/{book_id}",
