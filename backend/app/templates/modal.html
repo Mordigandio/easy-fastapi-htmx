@@ -1,0 +1,102 @@
+<div id="modal-overlay" 
+     style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(2px);"
+     onclick="if(event.target === this) this.remove()">
+
+    <div style="background: white; padding: 30px; border-radius: 20px; width: 480px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative;">
+        
+        <!-- Кнопка закрытия (крестик) -->
+        <button onclick="this.closest('#modal-overlay').remove()" 
+                style="position: absolute; top: 20px; right: 20px; border: none; background: #f0f0f0; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+
+        {% if modal_type == 'list' %}
+            <h3 style="color: #244063; margin-top: 0;"> Параметры списка </h3>
+            <form hx-get="/books/" hx-target="#display" hx-on::after-request="this.closest('#modal-overlay').remove()">
+                <label>Пропустить записей (skip):</label>
+                <input type="number" name="skip" value="0" min="0">
+                <label>Показать записей (limit):</label>
+                <input type="number" name="limit" value="10" min="1">
+                <button type="submit" class="main-btn">Показать список</button>
+            </form>
+
+        {% elif modal_type == 'search' %}
+            <h3 style="color: #244063; margin-top: 0;"> Поиск по базе </h3>
+
+            <!-- переключатель -->
+            <div style="margin-bottom: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px;">
+                    <input type="checkbox" 
+                        id="search-mode" 
+                        style="width: auto; margin: 0;"
+                        hx-on:change="
+                            document.getElementById('text-search-fields').style.display = this.checked ? 'none' : 'block';
+                            document.getElementById('id-search-field').style.display = this.checked ? 'block' : 'none';
+                        ">
+                    Поиск по ID
+                </label>
+            </div>
+
+            <form hx-get="/books/" hx-target="#display" hx-on::after-request="this.closest('#modal-overlay').remove()">
+                
+                <!-- Обычный поиск (по умолчанию виден) -->
+                <div id="text-search-fields">
+                    <input type="text" name="search" placeholder="Название книги">
+                    <input type="text" name="author" placeholder="Автор">
+                </div>
+
+                <!-- Поиск по ID (по умолчанию скрыт) -->
+                <div id="id-search-field" style="display: none;">
+                    <input type="number" name="book_id" placeholder="Введите уникальный ID">
+                </div>
+
+                <button type="submit" class="main-btn">Найти</button>
+            </form>
+
+
+        {% elif modal_type == 'create' %}
+            <h3 style="color: #244063; margin-top: 0;"> Новая книга </h3>
+            <form hx-post="/books/" hx-target="#book-list-container" hx-swap="afterbegin" hx-on::after-request="if(event.detail.successful) this.closest('#modal-overlay').remove()">
+                <input type="text" name="title" placeholder="Название книги" required>
+                <input type="text" name="author" placeholder="Автор" required>
+                <input type="number" name="year" placeholder="Год издания" min="0">
+                <button type="submit" class="main-btn" style="background: #28a745;">Сохранить в базу</button>
+            </form>
+
+        {% elif modal_type == 'update' %}
+            <h3 style="color: #244063; margin-top: 0;">Обновление данных</h3>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1; border-right: 1px solid #eee; padding-right: 15px;">
+                    <label>ID для поиска:</label>
+                    <input type="number" name="book_id" form="update-form" required placeholder="Введите ID">
+                    <button type="button" class="btn-sm" hx-get="/books/api/get-book-info" hx-include="[name='book_id']" hx-target="#old-info">Проверить текущие</button>
+                    <div id="old-info" style="font-size: 11px; margin-top: 10px; color: #666; font-style: italic;">Тут появятся старые данные</div>
+                </div>
+                <div style="flex: 1;">
+                    <form id="update-form" hx-patch="/books/" hx-include="[name='book_id']" hx-target="#display" hx-on::after-request="if(event.detail.successful) this.closest('#modal-overlay').remove()">
+                        <input type="text" name="title" placeholder="Новое название">
+                        <input type="text" name="author" placeholder="Новый автор">
+                        <input type="number" name="year" placeholder="Новый год" min="0">
+                        <button type="submit" class="main-btn">Обновить</button>
+                    </form>
+                </div>
+            </div>
+
+        {% elif modal_type == 'delete' %}
+            <h3 style="color: #dc3545; margin-top: 0;">Удаление</h3>
+            <div style="text-align: center;">
+                <p>Введите ID книги для удаления:</p>
+                <input type="number" id="del-id" name="book_id" placeholder="ID записи" required>
+                <button class="main-btn" style="background: #666;" 
+                        hx-get="/books/api/get-book-info?context=delete" 
+                        hx-include="[name='book_id']" 
+                        hx-target="#delete-confirm-box">Найти и проверить</button>
+                <div id="delete-confirm-box" style="margin-top: 20px;"></div>
+            </div>
+        {% endif %}
+
+    <style>
+        .main-btn { width: 100%; background: #244063; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        .btn-sm { width: 100%; font-size: 12px; padding: 6px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 4px; }
+        input { width: 100%; padding: 10px; margin: 8px 0 15px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        label { font-size: 13px; font-weight: bold; color: #555; display: block; }
+    </style>
+</div>

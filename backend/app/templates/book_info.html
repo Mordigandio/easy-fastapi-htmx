@@ -1,0 +1,21 @@
+<div style="padding: 10px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px;">
+    <div style="font-size: 0.8em; color: #888;">Текущие данные (ID: {{ book.id }}):</div>
+    <div style="font-weight: bold; color: #244063; margin: 4px 0;">{{ book.title }}</div>
+    <div style="font-size: 0.9em; color: #555;">{{ book.author }}</div>
+    {% if book.year %}
+    <div style="font-size: 0.85em; color: #777; margin-top: 2px;">{{ book.year }} г.</div>
+    {% endif %}
+
+    
+    {% if request.query_params.get('context') == 'delete' %}
+    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #dc3545;">
+        <button class="main-btn" 
+                style="background: #dc3545; width: 100%; padding: 8px;"
+                hx-delete="/books/{{ book.id }}"
+                hx-target="#display"
+                hx-on::after-request="if(event.detail.successful) this.closest('#modal-overlay').remove()">
+            Подтвердить удаление
+        </button>
+    </div>
+    {% endif %}
+</div>

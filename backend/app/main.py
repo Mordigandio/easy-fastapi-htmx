@@ -1,5 +1,7 @@
 from app.routes.book import router as book_route
-from fastapi import FastAPI
+from app.utils.templates import templates
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 
 app = FastAPI(
     title="library",
@@ -8,6 +10,10 @@ app = FastAPI(
 
 app.include_router(book_route)
 
-@app.get("/")
-async def health_check():
-    return {"status": "ok", "service": "Book Service"}
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse(request=request, name="index.html", )
+
+@app.get("/api/get-modal")
+async def get_modal(request: Request, type: str = "list"):
+    return templates.TemplateResponse(request=request, name="modal.html", context={"modal_type": type})

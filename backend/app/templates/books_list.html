@@ -1,0 +1,9 @@
+<div id="book-list-container" style="display: flex; flex-direction: column; gap: 10px;">
+    {% for book in books %}
+        {% include "book_card.html" %}
+    {% else %}
+        <div style="text-align: center; padding: 50px; color: #bbb;">
+            <p>По вашему запросу ничего не найдено, попробуйте еще раз.</p>
+        </div>
+    {% endfor %}
+</div>

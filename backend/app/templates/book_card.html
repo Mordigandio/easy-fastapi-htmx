@@ -1,0 +1,12 @@
+<div style="padding: 15px; background: white; border: 1px solid #eee; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+    <div>
+        <div style="font-size: 0.85em; color: #888; margin-bottom: 4px;">ID: {{ book.id }}</div>
+        <strong style="color: #244063; font-size: 1.1em;">Название {{ book.title }}</strong>
+        <div style="color: #555; margin-top: 2px;">Автор {{ book.author }}</div>
+    </div>
+    {% if book.year %}
+    <div style="background: #f8f9fa; padding: 5px 10px; border-radius: 6px; border: 1px solid #eee; color: #666; font-size: 0.9em;">
+        {{ book.year }} г.
+    </div>
+    {% endif %}
+</div>

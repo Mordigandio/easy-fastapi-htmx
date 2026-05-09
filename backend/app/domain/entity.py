@@ -4,6 +4,7 @@ from datetime import datetime
 
 @dataclass(frozen=True)
 class BookEntity:
+    """ Сущность модели """
     id: int | None
     title: str
     author: str

@@ -45,8 +45,9 @@ class BookRepository:
         
         if not book:
             return None
-        
-        for key, value in data.model_dump(exclude_unset=True).items():
+
+
+        for key, value in data.model_dump(exclude_unset=True, exclude_none=True).items():
             setattr(book, key, value)
         
         await self.session.flush()
