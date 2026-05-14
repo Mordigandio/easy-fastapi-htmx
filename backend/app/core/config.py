@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     @computed_field
     @property
     def DATABASE_URL(self) -> str:
-        user = self.POSTGRES_USER
+        user = self.POSTGRES_USER  # используется для f-строки
         password = self.POSTGRES_PASSWORD
         return f"postgresql+asyncpg://{user}:{password}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
@@ -36,4 +36,5 @@ class Settings(BaseSettings):
         password = self.POSTGRES_PASSWORD
         return f"postgresql://{user}:{password}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
     
+
 settings = Settings()  

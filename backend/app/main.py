@@ -1,3 +1,4 @@
+from app.domain.exception import DomainError
 from app.routes.book import router as book_route
 from app.utils.templates import templates
 from fastapi import FastAPI, Request
@@ -8,12 +9,28 @@ app = FastAPI(
     version="0.1.0"
 )
 
+@app.exception_handler(DomainError)
+async def domain_error_handler(request: Request, exc: DomainError) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request,
+        name="error.html",
+        context={"message": exc.message}, 
+        status_code=exc.status_code        
+    )
+
 app.include_router(book_route)
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
-    return templates.TemplateResponse(request=request, name="index.html", )
+    # главная страница приложения
+    return templates.TemplateResponse(request=request, name="index.html")
+
 
 @app.get("/api/get-modal")
 async def get_modal(request: Request, type: str = "list"):
-    return templates.TemplateResponse(request=request, name="modal.html", context={"modal_type": type})
+    # получение модального окна по типу
+    return templates.TemplateResponse(
+        request=request, 
+        name="modal.html", 
+        context={"modal_type": type}
+    )

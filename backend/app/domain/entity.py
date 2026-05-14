@@ -1,13 +1,15 @@
-from dataclasses import dataclass
 from datetime import datetime
 
+from pydantic import BaseModel, ConfigDict
 
-@dataclass(frozen=True)
-class BookEntity:
-    """ Сущность модели """
-    id: int | None
+
+class BookEntity(BaseModel):
+    """ Доменная модель книги """
+    
+    model_config = ConfigDict(from_attributes=True, frozen=True)
+    id: int
     title: str
     author: str
-    year: int | None
+    year: int | None = None
     created_at: datetime | None
     updated_at: datetime | None

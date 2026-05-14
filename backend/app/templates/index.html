@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Заголовок вашей страницы</title>
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
+    <!-- Заголовок страницы -->
+    <title>Библиотека</title>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-beta3" integrity="sha384-bq4nTap5u8w4XlVP8JHkDioQVZBI5wUx5PxNwlbCq27H5QJ+q0CSeJcTYU+PLdCp" crossorigin="anonymous"></script>
 </head>
-<body style="padding: 20px; font-family: sans-serif; background-color: #f4f7f6;">
-
+<body hx-ext="response-targets" style="padding: 20px; font-family: sans-serif; background-color: #f4f7f6;">
+    
 <div style="display: flex; gap: 20px; align-items: flex-start; max-width: 1000px; margin: 40px auto;">
     
-    <!-- Боковое меню -->
+    <!-- Кнопки -->
     <div style="display: flex; flex-direction: column; gap: 10px; width: 220px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
         <button hx-get="/api/get-modal?type=list" hx-target="#modal-container" class="btn"> Загрузить данные </button>
         <button hx-get="/api/get-modal?type=search" hx-target="#modal-container" class="btn"> Поиск </button>
@@ -19,13 +20,13 @@
         <button hx-get="/api/get-modal?type=delete" hx-target="#modal-container" class="btn-danger"> Удалить </button>
     </div>
 
-    <!-- Основной экран -->
+    <!-- Основной экран (logs) -->
     <div id="display" style="flex-grow: 1; min-height: 400px; border-radius: 12px; padding: 25px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;">
         <h2 style="color: #bbb; text-align: center; margin-top: 150px;">Выберите действие в меню</h2>
     </div>
 </div>
 
-
+<!-- контейнер для динамических модальных окон -->
 <div id="modal-container"></div>
 
 <style>
